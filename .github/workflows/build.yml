@@ -1,0 +1,41 @@
+name: Build LicheeRV Nano Image
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libncurses5-dev rsync \
+            bc wget unzip git python3
+
+      - name: Download Buildroot 2026.02
+        run: |
+          git clone --depth 1 --branch 2026.02 https://github.com/buildroot/buildroot.git
+
+      - name: Configure Buildroot
+        run: |
+          cp licheerv_nano_defconfig buildroot/configs/
+          cd buildroot
+          # 1. Apply your config
+          make FORCE_UNSAFE_CONFIGURE=1 licheerv_nano_defconfig
+          # 2. Remove any legacy symbols that aren't in the 2026.02 tree
+          sed -i '/BR2_LEGACY/d' .config
+          # 3. Fill in defaults for any missing symbols
+          make FORCE_UNSAFE_CONFIGURE=1 olddefconfig
+
+      - name: Build
+        run: |
+          cd buildroot
+          make FORCE_UNSAFE_CONFIGURE=1 -j$(nproc)
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: licheerv-nano-images
+          path: buildroot/output/images/

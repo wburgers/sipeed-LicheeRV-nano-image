@@ -1,0 +1,27 @@
+# Architecture
+BR2_riscv=y
+BR2_riscv_64=y
+BR2_riscv_abi_lp64d=y
+
+# Toolchain - Using Bootlin (Standard & Reliable)
+BR2_TOOLCHAIN_EXTERNAL=y
+BR2_TOOLCHAIN_EXTERNAL_BOOTLIN=y
+# This symbol name might have changed slightly in 2026, 
+# so we use the most generic RISC-V 64 musl bleeding-edge option
+BR2_TOOLCHAIN_EXTERNAL_BOOTLIN_RISCV64_MUSL_BLEEDING_EDGE=y
+
+# System Configuration
+BR2_TARGET_GENERIC_HOSTNAME="licheerv-nano"
+BR2_TARGET_GENERIC_ISSUE="Welcome to LicheeRV Nano"
+BR2_SYSTEM_BIN_SH_BASH=y
+BR2_TARGET_GENERIC_GETTY_PORT="ttyS0"
+
+# Filesystem
+BR2_TARGET_ROOTFS_EXT2=y
+BR2_TARGET_ROOTFS_EXT2_4=y
+BR2_TARGET_ROOTFS_TAR=y
+
+# Required Host Tools
+BR2_PACKAGE_HOST_DOSFSTOOLS=y
+BR2_PACKAGE_HOST_GENIMAGE=y
+BR2_PACKAGE_HOST_MTOOLS=y
